@@ -62,7 +62,7 @@ function Filters({
 
   return (
     <aside
-      className={`shrink-0 overflow-hidden rounded-lg bg-surface transition-all duration-300 ease-in-out ${
+      className={`shrink-0 overflow-hidden rounded-lg bg-surface transition-all max-h-fit duration-300 ease-in-out ${
         isOpen ? 'w-64 border border-border p-4 opacity-100' : 'w-0 border-0 p-0 opacity-0'
       }`}
     >

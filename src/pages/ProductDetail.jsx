@@ -41,10 +41,8 @@ function ProductDetail() {
   return (
     <>
       <Header searchValue="" onSearchChange={() => {}} />
-
-      <div className="p-6">
-        <div className="mx-auto max-w-5xl rounded-lg border border-border bg-surface p-8 shadow-sm">
-          <Button variant="secondary" className="mb-6 w-auto" onClick={() => navigate(-1)}>
+        <div className="p-8">
+          <Button variant="secondary" className=" w-auto max-w-fit" onClick={() => navigate(-1)}>
             ← Back
           </Button>
 
@@ -93,7 +91,6 @@ function ProductDetail() {
             </div>
           )}
         </div>
-      </div>
     </>
   )
 }

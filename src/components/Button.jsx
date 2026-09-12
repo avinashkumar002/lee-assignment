@@ -1,5 +1,5 @@
 function Button({ children, onClick, variant = 'primary', type = 'button', className = '', disabled = false }) {
-    const baseStyles = 'rounded-xl px-4 py-1.5 font-sm transition-colors w-full cursor-pointer'
+    const baseStyles = 'rounded-lg px-4 py-1.5 font-sm transition-colors w-full cursor-pointer'
 
     const variants = {
         primary: 'bg-accent text-accent-text hover:bg-accent-hover',
