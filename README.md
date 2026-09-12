@@ -1,16 +1,25 @@
-# React + Vite
+# Product Listing App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An Amazon-style product listing and detail page built with React, React Router, and the DummyJSON Products API.
 
-Currently, two official plugins are available:
+## Setup Instructions
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+git clone https://github.com/avinashkumar002/lee-assignment.git
+cd lee-assignment
+npm install
+npm run dev
+```
 
-## React Compiler
+App runs at `http://localhost:5173`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Assumptions Made
 
-## Expanding the ESLint configuration
+- The DummyJSON dataset (~194 products) is treated as the full product catalog for this app — no separate seed/mock data used.
+- "Rating" in the UI refers to the `rating` field returned per product by the API.
+- Reviews shown on the detail page use the `reviews` array returned per product by the DummyJSON API.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Architectural Decisions
+
+- **Filtering & pagination — client-side, fetch-once approach:** All products are fetched once (`limit=0`) on load, then category, price, and brand filters are applied together in-memory, and pagination slices the already-filtered result set. This was chosen because DummyJSON has no single endpoint supporting combined category + price + brand filtering server-side, and the assessment explicitly requires filters to work together. At this dataset size (~194 products), fetching once is negligible overhead and gives instant, correct combined filtering. At production scale with a much larger catalog, this would move to server-side filtering via a search index (e.g. Elasticsearch/Algolia) rather than REST `limit`/`skip` pagination.
+- **Component structure — flat, not atomic design:** Given the app is two pages with a modest component count, components are organized in a single flat `components/` folder rather than an atoms/molecules/organisms hierarchy. Components are split along actual reuse boundaries (e.g. `StarRating`, `Pagination`, `Button` are reused across multiple views) rather than by visual hierarchy for its own sake.
