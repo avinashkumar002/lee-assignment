@@ -17,9 +17,9 @@ function ProductListing() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isFilterOpen, setIsFilterOpen] = useState(true)
+  const searchQuery = searchParams.get('q') ?? ''
 
-  // Filter state derived directly from the URL — this is what survives
-  // unmount/remount when navigating to a detail page and back.
+  // Filter state derived directly from the URL 
   const selectedCategories = useMemo(
     () => searchParams.get('category')?.split(',').filter(Boolean) ?? [],
     [searchParams]
@@ -78,10 +78,13 @@ function ProductListing() {
         selectedBrands.length === 0 || selectedBrands.includes(product.brand)
       const matchesMinPrice = priceRange.min == null || product.price >= priceRange.min
       const matchesMaxPrice = priceRange.max == null || product.price <= priceRange.max
+      const matchesSearch =
+        searchQuery.trim() === '' ||
+        product.title.toLowerCase().includes(searchQuery.trim().toLowerCase())
 
-      return matchesCategory && matchesBrand && matchesMinPrice && matchesMaxPrice
+      return matchesCategory && matchesBrand && matchesMinPrice && matchesMaxPrice && matchesSearch
     })
-  }, [allProducts, selectedCategories, selectedBrands, priceRange])
+  }, [allProducts, selectedCategories, selectedBrands, priceRange, searchQuery])
 
   const totalPages = Math.ceil(filteredProducts.length / PAGE_SIZE)
 
@@ -128,9 +131,17 @@ function ProductListing() {
     updateParams({ page: String(page) })
   }
 
+  const handleSearchChange = (value) => {
+    updateParams({ q: value || null, page: null })
+  }
+
   return (
     <div>
-      <Header onMenuClick={() => setIsFilterOpen((prev) => !prev)} />
+      <Header
+        onMenuClick={() => setIsFilterOpen((prev) => !prev)}
+        searchValue={searchQuery}
+        onSearchChange={handleSearchChange}
+      />
 
       <div className="flex gap-6 p-6">
         <Filters

@@ -39,8 +39,8 @@ function ProductDetail() {
   }, [id])
 
   return (
-    <div>
-      <Header />
+    <>
+      <Header searchValue="" onSearchChange={() => {}} />
 
       <div className="p-6">
         <div className="mx-auto max-w-5xl rounded-lg border border-border bg-surface p-8 shadow-sm">
@@ -94,7 +94,7 @@ function ProductDetail() {
           )}
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
