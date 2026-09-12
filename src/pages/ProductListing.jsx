@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
 import Filters from '../components/Filters'
 import ProductCard from '../components/ProductCard'
@@ -9,16 +10,32 @@ import ErrorMessage from '../components/ErrorMessage'
 const PAGE_SIZE = 12
 
 function ProductListing() {
+  const [searchParams, setSearchParams] = useSearchParams()
+
   const [allProducts, setAllProducts] = useState([])
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-
-  const [selectedCategories, setSelectedCategories] = useState([])
-  const [selectedBrands, setSelectedBrands] = useState([])
-  const [priceRange, setPriceRange] = useState({ min: null, max: null })
-  const [currentPage, setCurrentPage] = useState(1)
   const [isFilterOpen, setIsFilterOpen] = useState(true)
+
+  // Filter state derived directly from the URL — this is what survives
+  // unmount/remount when navigating to a detail page and back.
+  const selectedCategories = useMemo(
+    () => searchParams.get('category')?.split(',').filter(Boolean) ?? [],
+    [searchParams]
+  )
+  const selectedBrands = useMemo(
+    () => searchParams.get('brand')?.split(',').filter(Boolean) ?? [],
+    [searchParams]
+  )
+  const priceRange = useMemo(
+    () => ({
+      min: searchParams.get('minPrice') ? Number(searchParams.get('minPrice')) : null,
+      max: searchParams.get('maxPrice') ? Number(searchParams.get('maxPrice')) : null,
+    }),
+    [searchParams]
+  )
+  const currentPage = Number(searchParams.get('page')) || 1
 
   useEffect(() => {
     async function fetchData() {
@@ -73,23 +90,42 @@ function ProductListing() {
     return filteredProducts.slice(start, start + PAGE_SIZE)
   }, [filteredProducts, currentPage])
 
+  const updateParams = (updates) => {
+    const next = new URLSearchParams(searchParams)
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value === null || value === '' || (Array.isArray(value) && value.length === 0)) {
+        next.delete(key)
+      } else {
+        next.set(key, Array.isArray(value) ? value.join(',') : value)
+      }
+    })
+    setSearchParams(next)
+  }
+
   const handleCategoryChange = (category) => {
-    setSelectedCategories((prev) =>
-      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
-    )
-    setCurrentPage(1)
+    const next = selectedCategories.includes(category)
+      ? selectedCategories.filter((c) => c !== category)
+      : [...selectedCategories, category]
+    updateParams({ category: next, page: null })
   }
 
   const handleBrandChange = (brand) => {
-    setSelectedBrands((prev) =>
-      prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
-    )
-    setCurrentPage(1)
+    const next = selectedBrands.includes(brand)
+      ? selectedBrands.filter((b) => b !== brand)
+      : [...selectedBrands, brand]
+    updateParams({ brand: next, page: null })
   }
 
   const handlePriceApply = (range) => {
-    setPriceRange(range)
-    setCurrentPage(1)
+    updateParams({
+      minPrice: range.min != null ? String(range.min) : null,
+      maxPrice: range.max != null ? String(range.max) : null,
+      page: null,
+    })
+  }
+
+  const handlePageChange = (page) => {
+    updateParams({ page: String(page) })
   }
 
   return (
@@ -125,7 +161,7 @@ function ProductListing() {
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}
-                  onPageChange={setCurrentPage}
+                  onPageChange={handlePageChange}
                 />
               </div>
             </>
