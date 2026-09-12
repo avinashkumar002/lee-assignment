@@ -5,7 +5,7 @@ An Amazon-style product listing and detail page built with React, React Router, 
 ## Setup Instructions
 
 ```bash
-git clone <your-repo-url>
+git clone <https://github.com/avinashkumar002/lee-assignment.git>
 cd lee-assignment
 npm install
 npm run dev
