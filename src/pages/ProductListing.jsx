@@ -146,6 +146,7 @@ function ProductListing() {
       <div className="flex gap-6 p-6">
         <Filters
           isOpen={isFilterOpen}
+          onClose={() => setIsFilterOpen(false)}
           categories={categories}
           brands={brands}
           selectedCategories={selectedCategories}
@@ -162,7 +163,7 @@ function ProductListing() {
 
           {!loading && !error && (
             <>
-              <div className="grid grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {paginatedProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}

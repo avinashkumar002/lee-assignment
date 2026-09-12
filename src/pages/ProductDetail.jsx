@@ -41,56 +41,56 @@ function ProductDetail() {
   return (
     <>
       <Header searchValue="" onSearchChange={() => {}} />
-        <div className="p-8">
-          <Button variant="secondary" className=" w-auto max-w-fit" onClick={() => navigate(-1)}>
-            ← Back
-          </Button>
+      <div className="p-4 sm:p-8">
+        <Button variant="secondary" className="mb-4 w-auto max-w-fit sm:mb-0" onClick={() => navigate(-1)}>
+          ← Back
+        </Button>
 
-          {loading && <Loader />}
-          {error && <ErrorMessage message={error} />}
+        {loading && <Loader />}
+        {error && <ErrorMessage message={error} />}
 
-          {!loading && !error && product && (
-            <div className="grid grid-cols-[2fr_3fr] gap-10">
-              <div className="flex items-start justify-center">
-                <img
-                  src={product.thumbnail}
-                  alt={product.title}
-                  className="h-72 w-auto max-w-full object-contain"
-                />
-              </div>
-
-              <div>
-                <h1 className="mb-2 text-2xl font-bold text-text-primary">{product.title}</h1>
-
-                <div className="mb-3 flex items-center gap-3">
-                  <span className="text-xl font-bold text-text-primary">${product.price}</span>
-                  <StarRating rating={product.rating} />
-                </div>
-
-                <p className="mb-1 text-sm text-text-secondary">
-                  <span className="font-semibold text-text-primary">Brand:</span> {product.brand}
-                </p>
-                <p className="mb-4 text-sm text-text-secondary">
-                  <span className="font-semibold text-text-primary">Category:</span> {product.category}
-                </p>
-
-                <div className="mb-6 border-t border-border pt-4">
-                  <h2 className="mb-2 text-lg font-bold text-text-primary">Description</h2>
-                  <p className="text-sm text-text-secondary">{product.description}</p>
-                </div>
-
-                {product.reviews && product.reviews.length > 0 && (
-                  <div className="border-t border-border pt-4">
-                    <h2 className="mb-2 text-lg font-bold text-text-primary">Reviews</h2>
-                    {product.reviews.map((review, index) => (
-                      <ReviewCard key={index} review={review} />
-                    ))}
-                  </div>
-                )}
-              </div>
+        {!loading && !error && product && (
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-[2fr_3fr] md:gap-10">
+            <div className="flex items-start justify-center">
+              <img
+                src={product.thumbnail}
+                alt={product.title}
+                className="h-56 w-auto max-w-full object-contain sm:h-72"
+              />
             </div>
-          )}
-        </div>
+
+            <div>
+              <h1 className="mb-2 text-xl font-bold text-text-primary sm:text-2xl">{product.title}</h1>
+
+              <div className="mb-3 flex items-center gap-3">
+                <span className="text-lg font-bold text-text-primary sm:text-xl">${product.price}</span>
+                <StarRating rating={product.rating} />
+              </div>
+
+              <p className="mb-1 text-sm text-text-secondary">
+                <span className="font-semibold text-text-primary">Brand:</span> {product.brand}
+              </p>
+              <p className="mb-4 text-sm text-text-secondary">
+                <span className="font-semibold text-text-primary">Category:</span> {product.category}
+              </p>
+
+              <div className="mb-6 border-t border-border pt-4">
+                <h2 className="mb-2 text-lg font-bold text-text-primary">Description</h2>
+                <p className="text-sm text-text-secondary">{product.description}</p>
+              </div>
+
+              {product.reviews && product.reviews.length > 0 && (
+                <div className="border-t border-border pt-4">
+                  <h2 className="mb-2 text-lg font-bold text-text-primary">Reviews</h2>
+                  {product.reviews.map((review, index) => (
+                    <ReviewCard key={index} review={review} />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </>
   )
 }

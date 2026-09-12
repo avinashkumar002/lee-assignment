@@ -39,8 +39,43 @@ function FilterSection({ title, items, selected, onChange, formatItem }) {
   )
 }
 
+function PriceRangeFilter({ priceRange, onApply }) {
+  const [minPrice, setMinPrice] = useState(priceRange.min ?? '')
+  const [maxPrice, setMaxPrice] = useState(priceRange.max ?? '')
+
+  const handleApply = () => {
+    onApply({ min: minPrice ? Number(minPrice) : null, max: maxPrice ? Number(maxPrice) : null })
+  }
+
+  return (
+    <div className="mb-6">
+      <h3 className="mb-3 font-semibold text-text-primary">Price Range</h3>
+      <div className="flex gap-2">
+        <input
+          type="number"
+          placeholder="Min"
+          value={minPrice}
+          onChange={(e) => setMinPrice(e.target.value)}
+          className="w-1/2 rounded-md border border-border px-2 py-1.5 text-sm"
+        />
+        <input
+          type="number"
+          placeholder="Max"
+          value={maxPrice}
+          onChange={(e) => setMaxPrice(e.target.value)}
+          className="w-1/2 rounded-md border border-border px-2 py-1.5 text-sm"
+        />
+      </div>
+      <Button onClick={handleApply} variant="primary" className="mt-3">
+        Apply
+      </Button>
+    </div>
+  )
+}
+
 function Filters({
   isOpen,
+  onClose,
   categories,
   brands,
   selectedCategories,
@@ -50,64 +85,60 @@ function Filters({
   onBrandChange,
   onPriceApply,
 }) {
-  const [minPrice, setMinPrice] = useState(priceRange.min ?? '')
-  const [maxPrice, setMaxPrice] = useState(priceRange.max ?? '')
+  const filterContent = (
+    <>
+      <FilterSection
+        title="Categories"
+        items={categories}
+        selected={selectedCategories}
+        onChange={onCategoryChange}
+        formatItem={formatLabel}
+      />
 
-  const handleApply = () => {
-    onPriceApply({
-      min: minPrice ? Number(minPrice) : null,
-      max: maxPrice ? Number(maxPrice) : null,
-    })
-  }
+      <PriceRangeFilter
+        key={`${priceRange.min}-${priceRange.max}`}
+        priceRange={priceRange}
+        onApply={onPriceApply}
+      />
+
+      <FilterSection
+        title="Brands"
+        items={brands}
+        selected={selectedBrands}
+        onChange={onBrandChange}
+      />
+    </>
+  )
 
   return (
-    <aside
-      className={`shrink-0 overflow-hidden rounded-lg bg-surface transition-all max-h-fit duration-300 ease-in-out ${
-        isOpen ? 'w-64 border border-border p-4 opacity-100' : 'w-0 border-0 p-0 opacity-0'
-      }`}
-    >
-      <div className="w-56">
-        <h2 className="mb-4 text-lg font-bold text-text-primary">Filters</h2>
+    <>
+      {isOpen && (
+        <div className="fixed inset-0 z-40 bg-black/40 lg:hidden" onClick={onClose} />
+      )}
 
-        <FilterSection
-          title="Categories"
-          items={categories}
-          selected={selectedCategories}
-          onChange={onCategoryChange}
-          formatItem={formatLabel}
-        />
-
-        <div className="mb-6">
-          <h3 className="mb-3 font-semibold text-text-primary">Price Range</h3>
-          <div className="flex gap-2">
-            <input
-              type="number"
-              placeholder="Min"
-              value={minPrice}
-              onChange={(e) => setMinPrice(e.target.value)}
-              className="w-1/2 rounded-md border border-border px-2 py-1.5 text-sm"
-            />
-            <input
-              type="number"
-              placeholder="Max"
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(e.target.value)}
-              className="w-1/2 rounded-md border border-border px-2 py-1.5 text-sm"
-            />
-          </div>
-          <Button onClick={handleApply} variant="primary" className="mt-3">
-            Apply
-          </Button>
+      <aside
+        className={`
+          fixed inset-y-0 left-0 z-50 w-72 overflow-y-auto bg-surface p-4 shadow-lg
+          transition-transform duration-300 ease-in-out
+          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+          lg:static lg:z-auto lg:shadow-none lg:transition-all lg:translate-x-0
+          lg:overflow-hidden lg:rounded-lg lg:border lg:border-border
+          ${isOpen ? 'lg:w-64 lg:p-4 lg:opacity-100' : 'lg:w-0 lg:border-0 lg:p-0 lg:opacity-0'}
+        `}
+      >
+        <div className="mb-4 flex items-center justify-between lg:hidden">
+          <h2 className="text-lg font-bold text-text-primary">Filters</h2>
+          <button onClick={onClose} className="cursor-pointer text-text-secondary" aria-label="Close filters">
+            ✕
+          </button>
         </div>
 
-        <FilterSection
-          title="Brands"
-          items={brands}
-          selected={selectedBrands}
-          onChange={onBrandChange}
-        />
-      </div>
-    </aside>
+        <div className="w-64 lg:w-56">
+          <h2 className="mb-4 hidden text-lg font-bold text-text-primary lg:block">Filters</h2>
+          {filterContent}
+        </div>
+      </aside>
+    </>
   )
 }
 
