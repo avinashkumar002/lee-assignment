@@ -36,7 +36,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
     const visiblePages = getVisiblePages(currentPage, totalPages)
 
     return (
-        <div className="flex flex-wrap items-center justify-center gap-2">
+        <div className="flex items-center justify-center gap-2">
             <Button
                 variant="secondary"
                 className="min-w-[fit-content]"
